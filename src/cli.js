@@ -46,6 +46,14 @@ class Selector extends AutoComplete {
 			}
 			return;
 		}
+
+		// If the user presses return while holding ctrl,
+		// cd to the current directory instead of selecting.
+		if (event.name === 'return' && event.ctrl === true) {
+			cd(path.join('/', ...toDir, '..'));
+			return;
+		}
+
 		super.keypress(input, event);
 	}
 }
@@ -76,7 +84,13 @@ async function directoryPrompt(cwd, limit) {
 	const res = await exec(cmd, { cwd });
 	const choices = res.stdout.split('\n').slice(0, -1);
 
+	// check if is root directory
+	if (cwd !== '/') {
+		choices.push('..');
+	}
+
 	if (choices.length === 0) {
+		console.log('Dead end!');
 		return '';
 	}
 
