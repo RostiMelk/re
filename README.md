@@ -22,6 +22,7 @@ $ re
 
 ### Keybindings
 
+-   `↑`/`↓`: Move up/down the list.
 -   `Enter`: cd into the selected directory / open file.
 -   `Tab`: cd into the selected directory and continue browsing / open file.
 -   `Shift` + `Tab`: cd back to the previous directory and continue browsing.
