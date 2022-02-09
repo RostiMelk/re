@@ -1,0 +1,28 @@
+{
+	"name": "re",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"bin": {
+		"re": "bin/re"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/RostiMelk/re.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/RostiMelk/re/issues"
+	},
+	"homepage": "https://github.com/RostiMelk/re#readme",
+	"dependencies": {
+		"dotenv": "^16.0.0",
+		"enquirer": "^2.3.6",
+		"esm": "^3.2.25"
+	}
+}
