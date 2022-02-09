@@ -4,7 +4,7 @@
 
 Quickly navigate between recent directories and files in your terminal. ⚡
 
-[![Image from Gyazo](https://i.gyazo.com/9c232c1e58e2a731623b8d4cdd583baa.gif)](https://gyazo.com/9c232c1e58e2a731623b8d4cdd583baa)
+![Example GIF](https://user-images.githubusercontent.com/25268506/153297173-85ed0c24-8d91-4333-b0e3-56b5565d2210.gif)
 
 ## Installation
 
