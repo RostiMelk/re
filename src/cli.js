@@ -11,7 +11,7 @@ dotenv.config({
 });
 
 const workingDir = process.cwd();
-const toDir = workingDir.split('/').slice(1);
+const destDir = workingDir.split('/').slice(1);
 
 class Selector extends AutoComplete {
 	constructor(options = {}) {
@@ -28,21 +28,21 @@ class Selector extends AutoComplete {
 
 			// Handle reverse tab
 			if (event.shift === true) {
-				toDir.pop();
-				const selection = await directoryPrompt(path.join('/', ...toDir), limit);
-				cd(path.join('/', ...toDir, selection));
+				destDir.pop();
+				const selection = await directoryPrompt(path.join('/', ...destDir), limit);
+				cd(path.join('/', ...destDir, selection));
 				return;
 			}
 
 			// Continue tabbing
-			if (fs.lstatSync(path.join('/', ...toDir, this.selected.name)).isDirectory()) {
+			if (fs.lstatSync(path.join('/', ...destDir, this.selected.name)).isDirectory()) {
 				// If the tabbed item is a directory,
-				// we want to add it to the toDir array and show a new prompt
-				toDir.push(this.selected.name);
-				const selection = await directoryPrompt(path.join('/', ...toDir), limit);
-				cd(path.join('/', ...toDir, selection));
+				// we want to add it to the destDir array and show a new prompt
+				destDir.push(this.selected.name);
+				const selection = await directoryPrompt(path.join('/', ...destDir), limit);
+				cd(path.join('/', ...destDir, selection));
 			} else {
-				open(path.join('/', ...toDir, this.selected.name)); // Open file if it's not a directory
+				open(path.join('/', ...destDir, this.selected.name)); // Open file if it's not a directory
 			}
 			return;
 		}
@@ -50,7 +50,7 @@ class Selector extends AutoComplete {
 		// If the user presses return while holding ctrl,
 		// cd to the current directory instead of selecting.
 		if (event.name === 'return' && event.ctrl === true) {
-			cd(path.join('/', ...toDir, '..'));
+			cd(path.join('/', ...destDir, '..'));
 			return;
 		}
 
@@ -59,7 +59,7 @@ class Selector extends AutoComplete {
 }
 
 export async function cli(args) {
-	const limit = args[2] || 10;
+	const limit = args[2] || 50;
 	const selection = await directoryPrompt(workingDir, limit);
 
 	// If the selection is a directory, cd into it
@@ -114,7 +114,7 @@ async function directoryPrompt(cwd, limit) {
  * @param {string} path
  */
 function cd(path) {
-	spawn(process.env.SHELL, {
+	spawn(process.env.SHELL, ['-l'], {
 		cwd: path,
 		stdio: 'inherit',
 	});
