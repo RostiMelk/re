@@ -59,7 +59,7 @@ class Selector extends AutoComplete {
 }
 
 export async function cli(args) {
-	const limit = args[2] || 50;
+	const limit = args[2] || 12;
 	const selection = await directoryPrompt(workingDir, limit);
 
 	// If the selection is a directory, cd into it
