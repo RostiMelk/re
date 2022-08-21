@@ -24,12 +24,12 @@ class Selector extends AutoComplete {
 			super.clear();
 
 			// Get the limit from the original prompt
-			const limit = this.options.limit;
+			const overflowLimit = this.options.limit;
 
 			// Handle reverse tab
 			if (event.shift === true) {
-				destDir.pop();
-				const selection = await directoryPrompt(path.join('/', ...destDir), limit);
+				const referrerFolder = destDir.pop();
+				const selection = await directoryPrompt(path.join('/', ...destDir), overflowLimit, referrerFolder);
 				cd(path.join('/', ...destDir, selection));
 				return;
 			}
@@ -39,7 +39,7 @@ class Selector extends AutoComplete {
 				// If the tabbed item is a directory,
 				// we want to add it to the destDir array and show a new prompt
 				destDir.push(this.selected.name);
-				const selection = await directoryPrompt(path.join('/', ...destDir), limit);
+				const selection = await directoryPrompt(path.join('/', ...destDir), overflowLimit);
 				cd(path.join('/', ...destDir, selection));
 			} else {
 				open(path.join('/', ...destDir, this.selected.name)); // Open file if it's not a directory
@@ -59,8 +59,8 @@ class Selector extends AutoComplete {
 }
 
 export async function cli(args) {
-	const limit = args[2] || 12;
-	const selection = await directoryPrompt(workingDir, limit);
+	const overflowLimit = args[2] || 16;
+	const selection = await directoryPrompt(workingDir, overflowLimit);
 
 	// If the selection is a directory, cd into it
 	const selectionPath = path.join(workingDir, selection);
@@ -76,13 +76,22 @@ export async function cli(args) {
  * The directory is selected from a list sorted by the most recent modified date.
  *
  * @param {string} cwd
- * @param {int} limit
+ * @param {int} overflowLimit
+ * @param {string} initialSelection
  * @returns {Promise<string>}
  */
-async function directoryPrompt(cwd, limit) {
-	const cmd = `ls -1t | head -${limit}`;
-	const res = await exec(cmd, { cwd });
+async function directoryPrompt(cwd, overflowLimit, initialSelection = null) {
+	const res = await exec('ls -t', { cwd });
 	const choices = res.stdout.split('\n').slice(0, -1);
+
+	if (initialSelection) {
+		// move the initial selection to the top of the list
+		const initialSelectionIndex = choices.findIndex((choice) => choice === initialSelection);
+		if (initialSelectionIndex !== -1) {
+			const initialSelection = choices.splice(initialSelectionIndex, 1)[0];
+			choices.unshift(initialSelection);
+		}
+	}
 
 	// check if is root directory
 	if (cwd !== '/') {
@@ -97,7 +106,7 @@ async function directoryPrompt(cwd, limit) {
 	const prompt = new Selector({
 		name: 're',
 		message: 'Enter to navigate to dir, tab to navigate into directory',
-		limit,
+		limit: overflowLimit,
 		choices,
 	});
 	const selection = await prompt.run().catch(() => {
