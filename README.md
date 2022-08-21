@@ -1,6 +1,6 @@
 # Recent Dirs (re)
 
-![npm](https://img.shields.io/npm/v/recent-dirs)
+[![npm](https://img.shields.io/npm/v/recent-dirs)](https://www.npmjs.com/package/recent-dirs)
 
 Quickly navigate between recent directories and files in your terminal. ⚡
 
